@@ -23,16 +23,8 @@ module Decidim
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :scope,
-                 foreign_key: "decidim_scope_id",
-                 class_name: "Decidim::Scope",
-                 optional: true
-
       delegate :scopes, to: :organization
-
-      validate :scope_belongs_to_organization
     end
-
     # Gets the children scopes of the object's scope.
     #
     # If it's global, returns the organization's top scopes.
@@ -58,7 +50,6 @@ module Decidim
 
     # If any, gets the previous scope of the object.
     #
-    #
     # Returns a Decidim::Scope
     def previous_scope
       return if versions.count <= 1
@@ -72,6 +63,18 @@ module Decidim
       return if !scope || !organization
 
       errors.add(:scope, :invalid) unless organization.scopes.where(id: scope.id).exists?
+    end
+
+    def scope_belongs_to_participatory_space
+      return if !scope || !participatory_space
+
+      errors.add(:scope, :invalid) unless participatory_space.subscopes.where(id: scope.id).exists?
+    end
+
+    def scope_belongs_to_component
+      return if !scope || !component
+
+      errors.add(:scope, :invalid) unless component.subscopes.where(id: scope.id).exists?
     end
   end
 end

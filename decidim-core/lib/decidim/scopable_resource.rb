@@ -16,15 +16,6 @@ module Decidim
                  optional: true
 
       delegate :scopes_enabled, to: :component
-
-      validate :scope_belongs_to_component
     end
-
-    # # Whether the resource has subscopes or not.
-    # #
-    # # Returns a boolean.
-    # def has_subscopes?
-    #   scopes_enabled && subscopes.any?
-    # end
   end
 end

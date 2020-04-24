@@ -24,7 +24,17 @@ module Decidim
 
     included do
       delegate :scopes, to: :organization
+
+      validate :scope_belongs_to_organization
     end
+
+    # Whether the resource has scopes enabled or not.
+    #
+    # Returns a boolean.
+    def scopes_enabled?
+      scopes_enabled
+    end
+
     # Gets the children scopes of the object's scope.
     #
     # If it's global, returns the organization's top scopes.
@@ -38,7 +48,7 @@ module Decidim
     #
     # Returns a boolean.
     def has_subscopes?
-      scopes_enabled && subscopes.any?
+      scopes_enabled? && subscopes.any?
     end
 
     # Whether the passed subscope is out of the resource's scope.
@@ -59,22 +69,18 @@ module Decidim
 
     private
 
+    # validation method for participatory spaces
     def scope_belongs_to_organization
       return if !scope || !organization
 
       errors.add(:scope, :invalid) unless organization.scopes.where(id: scope.id).exists?
     end
 
+    # validation method for components
     def scope_belongs_to_participatory_space
-      return if !scope || !participatory_space
+      return if !scopes_enabled? || !participatory_space
 
-      errors.add(:scope, :invalid) unless participatory_space.subscopes.where(id: scope.id).exists?
-    end
-
-    def scope_belongs_to_component
-      return if !scope || !component
-
-      errors.add(:scope, :invalid) unless component.subscopes.where(id: scope.id).exists?
+      errors.add(:scope, :invalid) if participatory_space.out_of_scope?(scope)
     end
   end
 end

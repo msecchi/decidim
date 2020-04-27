@@ -1,56 +1,65 @@
-<div id="project-<%= project.id %>-item" class="card--list__item">
-  <div class="card--list__text">
+<div id="project-<%= project.id %>-item" class="budget-list__item">
+  <div class="budget-list__text card__text">
     <div>
       <%= link_to project, class: "card__link" do %>
-        <span class="card__title budget-list__title">
+        <h5 class="card__title budget-list__title">
           <%= translated_attribute project.title %>
-        </span>
+        </h5>
       <% end %>
-      <%= cell "decidim/tags", project, context: { extra_classes: ["tags--project"] } %>
+      <div class="show-for-medium">
+        <%= cell "decidim/tags", project, context: { extra_classes: ["tags--project"] } %>
+      </div>
+      <div class="budget-list__data__number budget-list__number hide-for-medium">
+        <% if finished? %>
+          <span class="text-uppercase text-small"><%= t(".count", count: project.confirmed_orders_count) %></span>
+          <% if project_chosen %>
+             <span class="text-sm ml-xs text-success text-uppercase">
+              <%= icon("check", role: "img") %> <%= t(".you_voted") %>
+            </span>
+          <% end %>
+        <% else %>
+          <%= budget_to_currency(project.budget) %>
+        <% end %>
+      </div>
     </div>
   </div>
-  <% if current_user.present? %>
-    <% if current_order && current_order.projects.include?(project) %>
-      <div class="card--list__data budget-list__data budget-list__data--added">
-        <span class="card--list__data__number budget-list__number">
-          <%= budget_to_currency(project.budget) %>
-        </span>
-        <%= action_authorized_button_to "vote", order_line_item_path(project_id: project), method: :delete, remote: true, data: { disable: true, budget: project.budget, "redirect-url": project_path(project) }, disabled: !current_settings.votes_enabled? || current_order_checked_out? || !current_participatory_space.can_participate?(current_user), class: "button tiny budget--list__action success" do %>
-          <%= icon("check", class: "icon--small", aria_label: t(".remove"), role: "img") %>
-        <% end %>
-        <% if current_settings.show_votes? %>
-          <div class="card__support" style="width: 7em">
-            <span><%= t(".count", count: project.confirmed_orders_count) %></span>
+  <% if finished? %>
+    <div class="budget-list__data show-for-medium">
+      <div class="budget-list__data__votes">
+        <div class="text-large"><%= project.confirmed_orders_count %></div>
+        <span class="text-uppercase text-small"><%= t(".supports", count: project.confirmed_orders_count) %></span>
+        <% if project_chosen %>
+          <div class="text-sm mt-s text-success">
+            <%= icon("check", role: "img") %> <%= t(".you_voted") %>
           </div>
         <% end %>
       </div>
-    <% else %>
-      <div class="card--list__data budget-list__data">
-        <span class="card--list__data__number budget-list__number">
-          <%= budget_to_currency(project.budget) %>
-        </span>
-        <%= action_authorized_button_to "vote", order_line_item_path(project_id: project), method: :post, remote: true, data: { disable: true, budget: project.budget, add: true, "redirect-url": project_path(project) }, disabled: !current_settings.votes_enabled? || current_order_checked_out? || !current_participatory_space.can_participate?(current_user), class: "button tiny hollow budget--list__action" do %>
-          <%= icon("check", class: "icon--small", aria_label: t(".add"), role: "img") %>
-        <% end %>
-        <% if current_settings.show_votes? %>
-          <div class="card__support" style="width: 7em">
-            <span><%= t(".count", count: project.confirmed_orders_count) %></span>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+    </div>
   <% else %>
-    <div class="card--list__data budget-list__data">
-      <span class="card--list__data__number budget-list__number">
+    <div class="budget-list__data <%= " budget-list__data--added" if can_have_order? && project_chosen %><%= " show-for-medium" if (checked_out? && !project_chosen) %>">
+      <% if can_have_order? && checked_out? %>
+        <span class="button tiny success budget-list__action budget-list__action--disabled">
+          <%= icon("check", class: "icon--small", role: "img") %>
+        </span>
+      <% end %>
+
+      <span class="budget-list__data__number budget-list__number show-for-medium">
         <%= budget_to_currency(project.budget) %>
+        <% if show_votes? %>
+          <span class="text-uppercase text-small"><%= t(".count", count: project.confirmed_orders_count) %></span>
+        <% end %>
       </span>
-      <a href="#" class="button tiny hollow budget--list__action disabled" data-toggle="loginModal">
-        <%= icon("check", class: "icon--small", aria_label: t(".add"), role: "img") %>
-      </a>
-      <% if current_settings.show_votes? %>
-        <div class="card__support" style="width: 7em">
-          <span><%= t(".count", count: project.confirmed_orders_count) %></span>
-        </div>
+
+      <% if current_user.present? %>
+        <% if can_have_order? && !checked_out? %>
+          <%= action_authorized_button_to "vote", order_line_item_path(project_id: project), method: project_chosen ? :delete : :post, remote: true, data: { disable: true, budget: project.budget, "redirect-url": project_path(project) }, disabled: !can_have_order? || checked_out?, class: "button tiny budget-list__action #{project_chosen ? :success : :hollow}" do %>
+            <%= icon("check", class: "icon--small", aria_label: t(project_chosen ? ".remove" : ".add"), role: "img") %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <a href="#" class="button tiny hollow budget-list__action" data-toggle="loginModal">
+          <%= icon("check", class: "icon--small", aria_label: t(".add"), role: "img") %>
+        </a>
       <% end %>
     </div>
   <% end %>

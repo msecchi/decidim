@@ -151,7 +151,11 @@ en:
             one: 1 support
             other: "%{count} supports"
           remove: Remove
+          supports:
+            one: support
+            other: supports
           view: View
+          you_voted: You voted
         project_budget_button:
           add: Add
           added: Added

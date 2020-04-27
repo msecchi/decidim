@@ -32,6 +32,7 @@ module Decidim
         user_can_read_assembly_list?
         user_can_read_current_assembly?
         user_can_create_assembly?
+        user_can_change_assembly_settings?
 
         # org admins and space admins can do everything in the admin section
         org_admin_action?
@@ -165,6 +166,13 @@ module Decidim
         toggle_allow(user.admin?)
       end
 
+      def user_can_change_assembly_settings?
+        return unless permission_action.action == :read &&
+                      permission_action.subject == :assembly_setting
+
+        toggle_allow(user.admin?)
+      end
+
       # Everyone can read the assembly list
       def user_can_read_assembly_list?
         return unless read_assembly_list_permission_action?
@@ -239,7 +247,8 @@ module Decidim
           :assembly,
           :assembly_user_role,
           :assembly_member,
-          :space_private_user
+          :space_private_user,
+          :assembly_setting
         ].include?(permission_action.subject)
         allow! if is_allowed
       end

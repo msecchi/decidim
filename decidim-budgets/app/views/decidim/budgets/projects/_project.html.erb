@@ -51,10 +51,8 @@
       </span>
 
       <% if current_user.present? %>
-        <% if can_have_order? && !checked_out? %>
-          <%= action_authorized_button_to "vote", order_line_item_path(project_id: project), method: project_chosen ? :delete : :post, remote: true, data: { disable: true, budget: project.budget, "redirect-url": project_path(project) }, disabled: !can_have_order? || checked_out?, class: "button tiny budget-list__action #{project_chosen ? :success : :hollow}" do %>
-            <%= icon("check", class: "icon--small", aria_label: t(project_chosen ? ".remove" : ".add"), role: "img") %>
-          <% end %>
+        <%= action_authorized_button_to "vote", order_line_item_path(project_id: project), method: project_chosen ? :delete : :post, remote: true, data: { add: !project_chosen, disable: true, budget: project.budget, "redirect-url": project_path(project) }, disabled: !can_have_order? || checked_out?, class: "button tiny budget-list__action #{project_chosen ? :success : :hollow}" do %>
+          <%= icon("check", class: "icon--small", aria_label: t(project_chosen ? ".remove" : ".add"), role: "img") %>
         <% end %>
       <% else %>
         <a href="#" class="button tiny hollow budget-list__action" data-toggle="loginModal">

@@ -13,7 +13,7 @@
       <%= t("budgets_group_information_modal.limit_reached", scope: "decidim.budgets.groups") %>
       <ul>
       <% discardable.each do |budget| %>
-        <li><%= link_to(t("budgets_group_information_modal.limit_reached_cancel", name: translated_attribute(budget.name), scope: "decidim.budgets.groups"), order_path_for(budget), method: :delete, class: "cancel-order", data: { confirm: t("projects.budget_summary.are_you_sure", scope: "decidim.budgets") }) %></li>
+        <li><%= link_to(t("budgets_group_information_modal.limit_reached_cancel", scope: "decidim.budgets.groups", name: translated_attribute(budget.name)), order_path_for(budget), method: :delete, class: "cancel-order", data: { confirm: t("projects.budget_summary.are_you_sure", scope: "decidim.budgets") }) %></li>
       <% end %>
       </ul>
     </div>
@@ -23,7 +23,7 @@
     <%= highlighted_heading if highlighted %>
   </p>
   <p>
-    <%= link_to t("budgets_group_information_modal.back_to", group_name: group_name, scope: "decidim.budgets.groups"), main_component_path(group_component) %>
+    <%= link_to t("budgets_group_information_modal.back_to", scope: "decidim.budgets.groups", group_name: group_name), main_component_path(group_component) %>
   </p>
   <div class="row">
     <div class="columns medium-8 medium-offset-2">

@@ -22,6 +22,8 @@ Decidim.register_component(:accountability) do |component|
   end
 
   component.settings(:global) do |settings|
+    settings.attribute :scopes_enabled, type: :boolean, default: true
+    settings.attribute :scope_id, type: :scope
     settings.attribute :comments_enabled, type: :boolean, default: true
     settings.attribute :intro, type: :text, translated: true, editor: true
     settings.attribute :categories_label, type: :string, translated: true, editor: true

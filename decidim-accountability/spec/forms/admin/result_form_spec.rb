@@ -196,7 +196,6 @@ module Decidim::Accountability
 
         context "when the scope is descendant from participatory space scope" do
           it { is_expected.to eq(scope) }
-          it { is_expected.to be_valid }
         end
 
         context "when the scope is not descendant from participatory space scope" do

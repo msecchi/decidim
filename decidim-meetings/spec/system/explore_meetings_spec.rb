@@ -13,7 +13,7 @@ describe "Explore meetings", type: :system do
 
   before do
     component_scope = create :scope, parent: participatory_process.scope
-    component.update!( settings: {scopes_enabled: true, scope_id: component_scope.id })
+    component.update!(settings: { scopes_enabled: true, scope_id: component_scope.id })
   end
 
   describe "index" do

@@ -19,7 +19,7 @@ module Decidim
       validates :address, presence: true, if: ->(form) { form.has_address? }
       validates :category, presence: true, if: ->(form) { form.category_id.present? }
       validates :scope, presence: true, if: ->(form) { form.scope_id.present? }
-      validates :decidim_scope_id, subscope_belongs_to_component: true, if: ->(form) { form.decidim_scope_id.present? }
+      validates :decidim_scope_id, subscope_belongs_to_component: true, if: ->(form) { form.scope_id.present? }
       validate :notify_missing_attachment_if_errored
 
       delegate :categories, to: :current_component

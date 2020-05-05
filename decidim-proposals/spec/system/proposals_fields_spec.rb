@@ -40,7 +40,8 @@ describe "Proposals", type: :system do
           create(:proposal_component,
                  :with_creation_enabled,
                  manifest: manifest,
-                 participatory_space: participatory_process)
+                 participatory_space: participatory_process,
+                 settings: { scopes_enabled: true, scope_id: participatory_process.scope&.id })
         end
 
         let(:proposal_draft) { create(:proposal, :draft, component: component) }

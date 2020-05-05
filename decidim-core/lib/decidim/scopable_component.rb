@@ -16,7 +16,7 @@ module Decidim
       #
       # Returns a boolean.
       def has_subscopes?
-        scopes_enabled || participatory_space.scopes_enabled && subscopes.any?
+        participatory_space.scopes_enabled? && subscopes.any?
       end
 
       # Public: Returns the component Scope
